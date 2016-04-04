@@ -23,10 +23,12 @@ class Player
       Player();
       void setusername(std::string username);
       std::string getusername();
+      void setpetnumber(int petnumber);
       int getpetnumer();
       void createpet();
+      //~Player()
     };
-
+//Player and pet
   int Player::pet::gethealth()
     {
       return health;
@@ -35,37 +37,70 @@ class Player
     {
       health = 70;
     }
+  //Player only
   Player::Player()
     {
       petnumber = 0;
       username = "";
     }
-  int Player::getpetnumer()
-    {
-      return petnumber;
-    }
-  std::string Player::getusername()
-    {
-      return username;
-    }
+  //Sets the username
   void Player::setusername(std::string username)
     {
       this->username = username;
     }
-  void Player::createpet()
-      {
-        pet * pp = new pet;
-        std::cout << pp->gethealth() << std::endl;
-        petnumber++;
-      }
-  void startmenu(std::vector<std::string> userdata)
+  //returns the players username
+  std::string Player::getusername()
     {
-      std::cout << "Welcome back " << userdata[0] << std::endl;
-      if(userdata[1] == "0")
+      return username;
+    }
+
+  void Player::setpetnumber(int petnumber)
+    {
+        this->petnumber = petnumber;
+    }
+
+  int Player::getpetnumer()
+    {
+      return petnumber;
+    }
+
+  void Player::createpet()
+    {
+      pet * pp = new pet;
+      std::cout << pp->gethealth() << std::endl;
+      petnumber++;
+    }
+//Turns strings into ints This is very helpful for loading players data
+  int stringtoint(std::string a)
+    {
+      int b = 0;
+      int c = 0;
+      for(int i = 0; i < a.size(); i++)
         {
-          std::cout << "It looks like you don't have a pet yet. I am making you one" << std::endl;
-          //will need to create a pet
+          b = a[i]-'0';
+          c += b;
+          if(i<(a.size()-1))
+          {
+            c = (c*10);
+          }
         }
+        return c;
+      }
+//menus are below
+
+  Player* loadplayer(std::vector<std::string> userdata)
+    {
+      Player * returninguser = new Player;
+      returninguser->setusername(userdata[0]);
+      returninguser->setpetnumber(stringtoint(userdata[1]));
+      return returninguser;
+    }
+  void startmenu(Player * returninguser)
+    {
+
+      std::cout << "Welcome back " << returninguser->getusername() << std::endl;
+      std::cout << "You have " << returninguser->getpetnumer()<<" pets" << std::endl;
+
     }
   void newplayermenu(Player * p)
     {
@@ -118,7 +153,8 @@ class Player
                 std::cout << line << std::endl;
                 userdata.push_back(line);
               }
-            startmenu(userdata);
+            Player * returnplayer = loadplayer(userdata);
+            startmenu(returnplayer);
           }
         }
     }
