@@ -5,7 +5,6 @@
 class Player
   {
     private:
-
     //accountclass
     //shopclass
     //clockclass
@@ -24,15 +23,16 @@ class Player
         public:
             pet();
             int gethunger();
+            void sethunger(int hungerlevel);
             std::string getpetname();
             void setpetname(std::string petname);
             void setpettype(int petnumber);
             int getpettype();
+            int gethappinesslevel();
+            void sethappinesslevel(int happinesslevel);
             //void getpetcolor();
             //void setpetcolor()
             //void getstudyreward();
-            //void getaccessory();
-            //void setaccesory();
             //~pet();
         };
       Player();
@@ -45,17 +45,20 @@ class Player
       //~Player()
     };
 //Player and pet
-  int Player::pet::gethunger()
-    {
-      return hungerlevel;
-    }
   Player::pet::pet()
     {
-      hungerlevel = 100;
+      hungerlevel = 70;
+      happinesslevel = 70;
       petname = "";
-      //color = "";
       pettype = 0;
-      //personalitytype = "";
+    }
+  int Player::pet::gethunger()
+    {
+        return hungerlevel;
+    }
+  void Player::pet::sethunger(int hungerlevel)
+    {
+      this->hungerlevel = hungerlevel;
     }
   std::string Player::pet::getpetname()
     {
@@ -73,7 +76,14 @@ class Player
       {
         return pettype;
       }
-
+  void Player::pet::sethappinesslevel(int happinesslevel)
+    {
+      this->happinesslevel = happinesslevel;
+    }
+  int Player::pet::gethappinesslevel()
+    {
+      return happinesslevel;
+    }
   //Player only
   Player::Player()
     {
@@ -165,6 +175,7 @@ class Player
       userinfo<< user->getpetnumer();
       userinfo.close();
     }
+
   void exitthegame(Player * user, Player::pet * a)
     {
       std::ofstream userinfo;
@@ -179,6 +190,7 @@ class Player
       userinfo<< a->getpettype();
       userinfo.close();
     }
+
   void exitthegame(Player * user, Player::pet * a, Player::pet * b)
     {
       std::ofstream userinfo;
@@ -197,19 +209,82 @@ class Player
       userinfo<<b->getpettype();
       userinfo.close();
     }
+
   void exitthegame(Player * user, Player::pet * a, Player::pet * b, Player::pet *c)
     {
-
+      std::ofstream userinfo;
+      std::string i = user->getusername();
+      userinfo.open(std::string(i+".txt").c_str());
+      userinfo << user->getusername();
+      userinfo<< "\n";
+      userinfo<< user->getpetnumer();
+      userinfo<<"\n";
+      userinfo<< a->getpetname();
+      userinfo<<"\n";
+      userinfo<< a->getpettype();
+      userinfo<<"\n";
+      userinfo<< b->getpetname();
+      userinfo<<"\n";
+      userinfo<<b->getpettype();
+      userinfo<<"\n";
+      userinfo<<c->getpetname();
+      userinfo<<"\n";
+      userinfo<<c->getpettype();
+      userinfo.close();
     }
 
 //the different control menus based off of how many pets are being player
+  void controlmenucouts()
+    {
+      std::cout << "What would you like to do?" << std::endl;
+      std::cout << "1. Create a pet" << std::endl;
+      std::cout << "2. Set a timer" << std::endl;
+      std::cout << "3. Go to the shop" << std::endl;
+      std::cout << "4. View your pet stats" << std::endl;
+      std::cout << "5. Go to your bank account" << std::endl;
+      std::cout << "6. Exit the game" << std::endl;
+    }
+
   void controlmenu(Player * user, Player::pet *a, Player::pet *b, Player::pet *c)
     {
-
+      controlmenucouts();
+      int selection = 0;
+      std::cin >> selection;
+      if(selection == 1)
+        {
+          std::cout << "Sorry, you cannot make more that 3 pets" << std::endl;
+        }
+      else if(selection == 2)
+        {
+          std::cout << "Set a time" << std::endl;
+        }
+      else if(selection == 3)
+        {
+          std::cout << "Go to the shop" << std::endl;
+        }
+      else if(selection == 4)
+        {
+          std::cout << "View Pet Stats" << std::endl;
+          //need to create a pet stat view
+        }
+      else if(selection == 5)
+        {
+          std::cout << "View Your Bank Account" << std::endl;
+        }
+      else if(selection == 6)
+        {
+          std::cout << "Exit the game" << std::endl;
+          exitthegame(user,a,b,c);
+        }
+      else
+        {
+          std::cout << "That is not a valid command" << std::endl;
+        }
     }
+
   void controlmenu(Player * user, Player::pet *a, Player::pet *b)
     {
-      std::cout << "made it to the new control menu" << std::endl;
+      controlmenucouts();
       int selection = 0;
       std::cin >> selection;
       if(selection == 1)
@@ -244,11 +319,10 @@ class Player
           std::cout << "That is not a valid command" << std::endl;
         }
     }
+
   void controlmenu(Player * user, Player::pet *a)
     {
-      //controlmenucouts();
-      //need to think about how I actually want to process the selection for each control menu
-
+      controlmenucouts();
       int selection = 0;
       std::cin >> selection;
       if(selection == 1)
@@ -268,6 +342,7 @@ class Player
       else if(selection == 4)
         {
           std::cout << "View Pet Stats" << std::endl;
+          //need to create a pet stat view
         }
       else if(selection == 5)
         {
@@ -283,7 +358,6 @@ class Player
           std::cout << "That is not a valid command" << std::endl;
         }
     }
-
 
   void startmenu(Player * returninguser,std::vector<std::string> userdata)
     {
@@ -311,12 +385,14 @@ class Player
         }
       else if(returninguser->getpetnumer()==3)
         {
-          // Player::pet*a;
-          // Player::pet*b;
-          // Player::pet*c;
+           Player::pet*a = returninguser->loadpet(userdata[2],stringtoint(userdata[3]));
+           Player::pet*b = returninguser->loadpet(userdata[4],stringtoint(userdata[5]));
+           Player::pet*c = returninguser->loadpet(userdata[6],stringtoint(userdata[7]));
+           std::cout << "You have 3 pets. Their names are " << a->getpetname() << " ," << b->getpetname() << " , and " << c->getpetname() << std::endl;
+           std::cout << "They are types" << a->getpettype() << b->getpettype() << c->getpettype()<< std::endl;
         }
-
     }
+
   void newplayermenu(Player * p)
     {
       std::cout << "First please enter your username" << std::endl;
@@ -335,6 +411,7 @@ class Player
       std::cout << "The program will now close and you can recompile with your account information" << std::endl;
 
     }
+
   int main(int argc, char** argv)
     {
       if(argc<=1)
@@ -370,6 +447,10 @@ class Player
               }
             Player * returnplayer = loadplayer(userdata);
             startmenu(returnplayer, userdata);
+          }
+        else
+          {
+            std::cout << "We couldn't find that username, please try again" << std::endl;
           }
         }
     }
