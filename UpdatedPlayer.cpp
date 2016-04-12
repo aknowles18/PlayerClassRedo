@@ -1,7 +1,10 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <algorithm>
 #include <vector>
+
+using namespace std;
 
 class Bank_Account
   {
@@ -12,6 +15,7 @@ class Bank_Account
     ~Bank_Account();
     int getNumTokens();
     void setNumTokens(int newNumTokens);
+    void addNumTokens(int newNumTokens);
     bool enoughTokens(int numNeeded);
   };
 
@@ -30,6 +34,11 @@ void Bank_Account::setNumTokens(int newNumTokens)
   {
     tokennumber = newNumTokens;
     std::cout << "Your bank account now has " << newNumTokens << " tokens!" << std::endl;
+  }
+
+void Bank_Account::addNumTokens(int newNumTokens)
+  {
+    tokennumber+=newNumTokens;
   }
 
 bool Bank_Account::enoughTokens(int numNeeded)
@@ -126,12 +135,11 @@ int Pet::gethappinesslevel()
 class Player
   {
     private:
-
-    //clockclass
-    int petnumber;
-    std::string username;
+      int petnumber;
+      std::string username;
     public:
       Player();
+      //~Player();
       void setusername(std::string username);
       std::string getusername();
       void setpetnumber(int petnumber);
@@ -140,8 +148,24 @@ class Player
       void loadpet(std::string petnumber,int pettype);
       std::vector<Pet*> pets;
       Bank_Account* useraccount;
-      //~Player()
   };
+    // Player::~Player()
+    //   {
+    //     if(petnumber >= 1)
+    //       {
+    //         delete pets[0];
+    //       }
+    //     if(petnumber >= 2)
+    //       {
+    //         delete pets[1]
+    //       }
+    //     if(petnumber >= 3)
+    //       {
+    //         delete pets[2]
+    //       }
+    //       delete useraccount;
+    //       delete pets;
+    //   }
 
     Player::Player()
       {
@@ -213,6 +237,217 @@ class Player
   }
 //menus are below
 
+class Item
+  {
+	 private:
+		  std::string nameOfItem;
+		  int costOfItem;
+      int matchingpettype;
+		  std::string typeOfItem;
+	public:
+		  Item(std::string nameOfItem, int costOfItem, int matchingpettype, std::string typeOfItem);
+      string getnameOfItem();
+      int getCostOfItem();
+  };
+
+Item::Item(std::string nameOfItem, int costOfItem, int matchingpettype, std::string typeOfItem)
+  {
+    this->nameOfItem = nameOfItem;
+    this->costOfItem = costOfItem;
+    this->matchingpettype = matchingpettype;
+    this->typeOfItem = typeOfItem;
+  }
+
+int Item::getCostOfItem()
+  {
+    return costOfItem;
+  }
+
+string Item::getnameOfItem()
+  {
+    return nameOfItem;
+  }
+
+class Shop
+  {
+	private:
+		Pet* petInside;
+    Bank_Account * useraccount;
+		std::vector<Item*> shopItems;
+		//std::vector<Item*> petItems;
+		void initializeFoodShop();
+	public:
+		Shop(Pet*, Bank_Account*, std::string);
+    void shopmenu();
+    void purchaseMenu();
+		//void purchaseItemFromShop(Item*);
+		//void sellItemToShop(Item*);
+		//void listItemsAll();
+		void listItemsNotOwned();
+		//void listItemsOwned();
+		//void listItemsByType(string);
+};
+
+Shop::Shop(Pet* petinside,  Bank_Account* useraccount, std::string shopType)
+  {
+	   this->petInside = petinside;
+     this->useraccount = useraccount;
+	    if (shopType.compare("food") == 0)
+      {
+		      initializeFoodShop();
+	    }
+  }
+
+void Shop::initializeFoodShop()
+  {
+    shopItems.push_back(new Item("Mush", 1, 0, "food"));
+    shopItems.push_back(new Item("Kibble", 10, 1, "food"));
+    shopItems.push_back(new Item("Bone", 25, 1, "food"));
+    shopItems.push_back(new Item("Fish", 15, 2, "food"));
+    shopItems.push_back(new Item("Dead Mouse", 30, 2, "food"));
+    shopItems.push_back(new Item("Bird seed", 10, 3, "food"));
+    shopItems.push_back(new Item("Mango", 25, 3, "food"));
+    shopItems.push_back(new Item("Mackeral", 15, 4, "food"));
+    shopItems.push_back(new Item("Cod", 20, 4,"food"));
+    shopItems.push_back(new Item("Student tears", 15, 5,"food"));
+    shopItems.push_back(new Item("Failed PA1", 30, 5, "food"));
+    shopItems.push_back(new Item("Banana", 10, 6, "food"));
+    shopItems.push_back(new Item("Pineapple", 25, 6, "food"));
+    shopItems.push_back(new Item("Carrot", 15, 7, "food"));
+    shopItems.push_back(new Item("Rabbit Pellets", 20, 7, "food"));
+    shopItems.push_back(new Item("Pizza", 30, 8, "food"));
+    shopItems.push_back(new Item("Burnt Bits", 10, 9, "food"));
+    shopItems.push_back(new Item("Fish Flakes", 15, 9, "food"));
+    shopItems.push_back(new Item("Fish Pellets", 20, 9, "food"));
+    shopItems.push_back(new Item("Gatorade", 15, 10,"food"));
+    shopItems.push_back(new Item("Nole's Fans", 1, 10,"food"));
+    shopmenu();
+
+  }
+
+void Shop::shopmenu()
+  {
+  int shopChoice1 = 1;
+  cout << "Welcome to the shop!! ";
+
+
+  while(shopChoice1 != 2 && shopChoice1 < 6  && shopChoice1 > 0)
+  {
+    cout << "What would you like to?: " << endl;
+    cout << "1. Purchase and Item" << endl;
+    cout << "2. Exit" << endl;
+    cin >> shopChoice1;
+    switch(shopChoice1)
+    {
+      case 1:
+      {
+        cout << "Choice one" << endl;
+        purchaseMenu();
+        break;
+      }
+      // case 2:
+      // {
+      //   cout << "Choice two" << endl;
+      //   break;
+      // }
+      // case 3:
+      // {
+      //   cout << "Choice three" << endl;
+      //   break;
+      // }
+      // case 4:
+      // {
+      //   cout << "Choice four" << endl;
+      //   break;
+      // }
+      case 2:
+      {
+        cout << "Exiting...." << endl;
+        break;
+      }
+    }
+  }
+}
+
+void Shop::purchaseMenu()
+  {
+    int purchChoice = 1;
+
+    while(purchChoice !=22  && purchChoice < 22  && purchChoice > 0)
+      {
+        std::cout << "What would you like to buy?: " << std::endl;
+        std::cout << "1. " << shopItems[0]->getnameOfItem() << "(" << shopItems[0]->getCostOfItem() << ")" << "\t";
+        std::cout << "\t2. " << shopItems[1]->getnameOfItem()<< "(" << shopItems[1]->getCostOfItem() << ")" << "\t";
+        std::cout << "3. " << shopItems[2]->getnameOfItem()<< "(" << shopItems[2]->getCostOfItem() << ")" << endl;
+        std::cout << "4. " << shopItems[3]->getnameOfItem()<< "(" << shopItems[3]->getCostOfItem() << ")" << "\t";
+        std::cout << "\t5. " << shopItems[4]->getnameOfItem() << "(" << shopItems[4]->getCostOfItem() << ")"<< "\t";
+        std::cout << "6. " << shopItems[5]->getnameOfItem() << "(" << shopItems[5]->getCostOfItem() << ")"<< endl;
+        std::cout << "7. " << shopItems[6]->getnameOfItem() << "(" << shopItems[6]->getCostOfItem() << ")"<< "\t";
+        std::cout << "8. " << shopItems[7]->getnameOfItem() << "(" << shopItems[7]->getCostOfItem() << ")"<< "\t";
+        std::cout << "9. " << shopItems[8]->getnameOfItem() << "(" << shopItems[8]->getCostOfItem() << ")"<< endl;
+        std::cout << "10. " << shopItems[9]->getnameOfItem() << "(" << shopItems[9]->getCostOfItem() << ")"<< "\t";
+        std::cout << "11. " << shopItems[10]->getnameOfItem() << "(" << shopItems[10]->getCostOfItem() << ")"<< "\t";
+        std::cout << "12. " << shopItems[11]->getnameOfItem() << "(" << shopItems[11]->getCostOfItem() << ")"<< std::endl;
+        std::cout << "13. " << shopItems[12]->getnameOfItem() << "(" << shopItems[12]->getCostOfItem() << ")"<< "\t";
+        std::cout << "14. " << shopItems[13]->getnameOfItem() << "(" << shopItems[13]->getCostOfItem() << ")"<< "\t";
+        std::cout << "15. " << shopItems[14]->getnameOfItem() << "(" << shopItems[14]->getCostOfItem() << ")"<< endl;
+        std::cout << "16. " << shopItems[15]->getnameOfItem() << "(" << shopItems[15]->getCostOfItem() << ")"<< "\t";
+        std::cout << "17. " << shopItems[16]->getnameOfItem() << "(" << shopItems[16]->getCostOfItem() << ")"<< "\t";
+        std::cout << "18. " << shopItems[17]->getnameOfItem() << "(" << shopItems[17]->getCostOfItem() << ")"<< endl;
+        std::cout << "19. " << shopItems[18]->getnameOfItem() << "(" << shopItems[18]->getCostOfItem() << ")"<< "\t";
+        std::cout << "20. " << shopItems[19]->getnameOfItem() << "(" << shopItems[19]->getCostOfItem() << ")"<< "\t";
+        std::cout << "21. " << shopItems[20]->getnameOfItem() << "(" << shopItems[20]->getCostOfItem() << ")"<< std::endl;
+        std::cout << "22. Exit" << std::endl;
+        std::cin >> purchChoice;
+
+      switch(purchChoice)
+      {
+        case 1:
+        {
+          cout << "You bought thing one" << endl;
+          break;
+        }
+        case 2:
+        {
+          cout << "You bought thing two" << endl;
+          break;
+        }
+        case 3:
+        {
+          cout << "You bought thing three" << endl;
+          break;
+        }
+        case 4:
+        {
+          cout << "You bought thing four" << endl;
+          break;
+        }
+        case 22:
+        {
+          cout << "Exiting...." << endl;
+          break;
+        }
+      }
+      if(purchChoice != 22)
+        {
+          int cont=0;
+          cout << "Would you like to buy anything else?" << endl;
+          cout << "1. Yes" << endl;
+          cout << "2. No" <<endl;
+          cin >> cont;
+          if(cont == 2)
+            {
+              purchChoice =22;
+            }
+          else
+            {
+              purchChoice=1;
+            }
+        }
+    }
+}
+
+
   Player* loadplayer(std::vector<std::string> userdata)
       {
         Player * returninguser = new Player;
@@ -229,12 +464,13 @@ class Player
   //The 4 different exit the games based on the amount of pets the player has
 
   void instructions()
-  {
+    {
       std::cout << "Your virtual pet is deisgned to help you study. It has three main features" << std::endl;
       std::cout << "1. Study timer: Set this and begin studying with a pet. When you study, your pet gets happier" << std::endl;
       std::cout << "2. The Shop: Go here to buy food for your pet. Do not overfeed them though or they won't be happy" << std::endl;
       std::cout << "3. Pet Creator: Why stop at one pet? With up to three pets you will be even more motivated to study" << std::endl;
-  }
+    }
+
   void exitthegame(Player * user)
     {
       std::ofstream userinfo;
@@ -338,6 +574,7 @@ class Player
       else if(selection == 3)
         {
           std::cout << "Go to the shop" << std::endl;
+          new Shop(user->pets[0], user->useraccount, "food");
           controlmenu(user);
         }
       else if(selection == 4)
@@ -431,8 +668,6 @@ class Player
       std::cout << "For your virtual pet to work DO NOT EDIT this file" << std::endl;
       std::cout << "The program will now close and you can recompile with your account information" << std::endl;
     }
-
-
 
   int main(int argc, char** argv)
     {
